@@ -1,36 +1,42 @@
 {
-    "php_log": {
-        "title": "PHP log format",
-        "description": "Log format used by PHP (and PHP-FPM)",
-        "url": "http://www.php.net/",
-        "regex": {
-            "fpm": {
-                "pattern": "^\\[(?<date>\\d{2}-\\w{3}-\\d{4}) (?<timestamp>\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?)\\] (?<level>[A-Z]+): (\\[(?<type>\\w+\\ \\w+)\\])?(?:pid (?<pid>\\d{1,8}),)?(?<body>.*)$"
-            },
-            "error": {
-                "pattern": "^\\[(?<date>\\d{2}-\\w{3}-\\d{4}) (?<timestamp>\\d{2}:\\d{2}:\\d{2}) (?<timezone>\\w+/\\w+)\\] PHP\\s+(?<body>.*)$"
-            }
-        },
-        "value": {
-            "date": { "kind": "string", "identifier": true },
-            "timezone": { "kind": "string", "identifier": true },
-            "timestamp": { "kind": "string", "identifier": true },
-            "pid": { "kind": "integer", "identifier": true },
-            "type": { "kind": "string", "identifier": true }
-        },
-        "level-field": "level",
-        "level": {
-            "error": "ERROR",
-            "warning": "WARNING",
-            "info": "NOTICE",
-            "debug": "DEBUG"
-        },
-        "sample": [
-            { "line" : "[29-Oct-2015 13:17:53] NOTICE: Terminating ..." },
-            { "line" : "[29-Oct-2015 09:11:20] NOTICE: [pool www] 'group' directive is ignored when FPM is not running as root" },
-            { "line" : "[03-Dec-2015 16:37:35.430903] DEBUG: pid 5135, fpm_socket_af_inet_listening_socket(), line 308: Found address for 127.0.0.1, socket opened on 127.0.0.1" },
-            { "line" : "[03-Dec-2015 16:37:36.505733] DEBUG: pid 5135, fpm_pctl_perform_idle_server_maintenance(), line 379: [pool www] currently 0 active children, 3 spare children" },
-            { "line" : "[05-Nov-2015 10:27:32 Europe/London] PHP Catchable fatal error:  Argument 1 passed to Something" }
-        ]
-    }
+	"php_log": {
+		"title": "PHP log format",
+		"description": "Log format used by PHP (and PHP-FPM)",
+		"url": "http://www.php.net/",
+		"regex": {
+			"error": {
+				"pattern": "^(?<timestamp>\\[\\d{2}-\\w{3}-\\d{4} \\d{2}:\\d{2}:\\d{2} \\w+(?:\\w+)\\]) (?<level>PHP \\w+(?:\\s\\w+)?:\\s)?\\s*(?<body>.*)$"
+			}
+		},
+		"timestamp-format": ["[%d-%b-%Y %H:%M:%S %Z]"],
+		"value": {
+			"date": { "kind": "string", "identifier": true },
+			"timezone": { "kind": "string", "identifier": true },
+			"timestamp": { "kind": "string", "identifier": true },
+			"pid": { "kind": "integer", "identifier": true },
+			"type": { "kind": "string", "identifier": true },
+			"level": { "kind": "string", "identifier": true }
+		},
+		"level-field": "level",
+		"level": {
+			"fatal": "PHP Fatal error:",
+			"warning": "PHP Warning:",
+			"info": "PHP Notice:|^(?!PHP Warning:|PHP Fatal error:|PHP Deprecated:).*",
+			"debug": "PHP Deprecated:"
+		},
+		"sample": [
+			{ "line": "[23-Oct-2025 16:25:51 UTC] PHP Notice:  La fonction WP_Object_Cache::set a été appelée de façon <strong>incorrecte</strong>. La clé de cache doit être un entier ou une chaîne non-vide, avec le type NULL renseigné. Veuillez lire <a href=\"https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/\">Débogage dans WordPress</a> (en) pour plus d’informations. (Ce message a été ajouté à la version 6.1.0.) in /home/jasongerber/Sites/localhost/xxx/wp-includes/functions.php on line 6257", "level": "info" },
+			{ "line": "[23-Oct-2025 17:34:36 UTC] PHP Warning:  function_name(): This is the message in /home/user/project/file.php on line 32", "level": "warning" },
+			{ "line": "[23-Oct-2025 17:34:36 UTC] PHP Fatal error:  Uncaught error: This is the message in /home/user/project/file.php on line 32", "level": "fatal" },
+			{ "line": "[11-Oct-2025 18:43:22 UTC] PHP Fatal error:  Uncaught Error: Undefined constant \"STRIPE_PUBLIC_KEY\" in /home/jasongerber/Sites/localhost/xxx/app/wp/wp-content/themes/jason-child/functions.php:119", "level": "fatal" },
+			{
+				"line": "[23-Oct-2025 10:50:43 UTC] WordPress database error Table 'xxx/home/jasongerber/Sites/localhost/xxx/web/index.php'), require('wp-blog-header.php'), require_once('wp-load.php'), require_once('/home/jasongerber/Sites/localhost/xxx/web/wp-config.php'), require_once('wp-settings.php'), include_once('/plugins/wordfence/wordfence.php'), require_once('/plugins/wordfence/lib/wordfenceClass.php'), wfCredentialsController::useLegacy2FA, wfCredentialsController::allowLegacy2FA, wfConfig::get",
+				"level": "info"
+			},
+			{
+				"line": "[23-Oct-2025 17:18:57 UTC] PHP Deprecated:  wp_enqueue_script est appelé avec un argument qui est <strong>obsolète</strong> depuis la version 10.3.0 ! Please use the new handle wc-photoswipe-ui-default in place of the previous handle photoswipe-ui-default. in /home/jasongerber/Sites/localhost/xxx/web/wp/wp-includes/functions.php on line 6121",
+				"level": "debug"
+			}
+		]
+	}
 }
